@@ -10,7 +10,7 @@ RUN apt-get update \
     && ./build.sh \
     && ./configure \
     && make \
-    && make install 
+    && make install \
     && cd .. \
     && NGINX_SRC=`nginx -v 2>&1 | cut -d / -f 2` \
     && git clone --depth 1 --single-branch https://github.com/SpiderLabs/ModSecurity-nginx.git \
@@ -21,17 +21,17 @@ RUN apt-get update \
     && make modules \
     && cp objs/ngx_http_modsecurity_module.so /etc/nginx/modules \
     && cd .. \
-    && rm -rf ModSecurity
+    && rm -rf ModSecurity \
     && rm -rf nginx-$NGINX_SRC \
     && rm -rf ModSecurity-nginx \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get purge -y --auto-remove $buildDeps
 
-RUN sed -i '1iload_module modules/ngx_http_modsecurity_module.so;' /etc/nginx/nginx.conf
+RUN sed -i '1iload_module modules/ngx_http_modsecurity_module.so;' /etc/nginx/nginx.conf \
     && mkdir /etc/nginx/modsec \
     && wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended \
     && mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf \
-    && sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf
+    && sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf \
     && git clone --depth 1 https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/nginx/modsec/owasp-modsecurity-crs \    
     && mv /etc/nginx/modsec/owasp-modsecurity-crs/crs-setup.conf.example /etc/nginx/modsec/owasp-modsecurity-crs/crs-setup.conf \
     && cd /etc/nginx/modsec/owasp-modsecurity-crs/rules \
