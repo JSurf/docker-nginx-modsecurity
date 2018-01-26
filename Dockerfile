@@ -25,7 +25,7 @@ RUN mkdir /etc/nginx/modsec \
     && wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended \
     && mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf \
     && sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf
-RUN git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/nginx/modsec/owasp-modsecurity-crs \    
+    && git clone --depth 1 https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/nginx/modsec/owasp-modsecurity-crs \    
     && mv /etc/nginx/modsec/owasp-modsecurity-crs/crs-setup.conf.example /etc/nginx/modsec/owasp-modsecurity-crs/crs-setup.conf \
     && cd /etc/nginx/modsec/owasp-modsecurity-crs/rules \
     && mv REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf \
