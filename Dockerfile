@@ -1,7 +1,7 @@
 FROM nginx:stable
 # Build libmodsecurity
 RUN apt-get update \
-    && buildDeps='apt-utils autoconf automake build-essential git libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev libtool libxml2-dev libyajl-dev pkgconf wget zlib1g-dev'
+    && buildDeps='apt-utils autoconf automake build-essential git libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev libtool libxml2-dev libyajl-dev pkgconf wget zlib1g-dev' \
     && apt-get install -y $buildDeps --no-install-recommends \
     && git clone --depth 1 -b v3/master --single-branch https://github.com/SpiderLabs/ModSecurity \
     && cd ModSecurity \
