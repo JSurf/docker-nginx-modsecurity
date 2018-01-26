@@ -1,6 +1,8 @@
 FROM nginx:stable
 # Build libmodsecurity
-RUN apt-get update && apt-get install -y apt-utils autoconf automake build-essential git libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev libtool libxml2-dev libyajl-dev pkgconf wget zlib1g-dev \
+RUN apt-get update \
+    && buildDeps='apt-utils autoconf automake build-essential git libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev libtool libxml2-dev libyajl-dev pkgconf wget zlib1g-dev'
+    && apt-get install -y $buildDeps --no-install-recommends \
     && git clone --depth 1 -b v3/master --single-branch https://github.com/SpiderLabs/ModSecurity \
     && cd ModSecurity \
     && git submodule init \
@@ -9,19 +11,24 @@ RUN apt-get update && apt-get install -y apt-utils autoconf automake build-essen
     && ./configure \
     && make \
     && make install 
-
-RUN NGINX_SRC=`nginx -v 2>&1 | cut -d / -f 2` \
+    && cd .. \
+    && NGINX_SRC=`nginx -v 2>&1 | cut -d / -f 2` \
     && git clone --depth 1 --single-branch https://github.com/SpiderLabs/ModSecurity-nginx.git \
     && wget http://nginx.org/download/nginx-$NGINX_SRC.tar.gz \
     && tar zxvf nginx-$NGINX_SRC.tar.gz \
     && cd nginx-$NGINX_SRC \
     && ./configure --with-compat --add-dynamic-module=../ModSecurity-nginx \
     && make modules \
-    && cp objs/ngx_http_modsecurity_module.so /etc/nginx/modules 
+    && cp objs/ngx_http_modsecurity_module.so /etc/nginx/modules \
+    && cd .. \
+    && rm -rf ModSecurity
+    && rm -rf nginx-$NGINX_SRC \
+    && rm -rf ModSecurity-nginx \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get purge -y --auto-remove $buildDeps
 
 RUN sed -i '1iload_module modules/ngx_http_modsecurity_module.so;' /etc/nginx/nginx.conf
-
-RUN mkdir /etc/nginx/modsec \
+    && mkdir /etc/nginx/modsec \
     && wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended \
     && mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf \
     && sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf
