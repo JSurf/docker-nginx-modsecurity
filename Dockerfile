@@ -24,10 +24,7 @@ RUN apt-get update \
     && rm -rf ModSecurity \
     && rm -rf nginx-$NGINX_SRC \
     && rm -rf ModSecurity-nginx \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get purge -y --auto-remove $buildDeps
-
-RUN sed -i '1iload_module modules/ngx_http_modsecurity_module.so;' /etc/nginx/nginx.conf \
+    && sed -i '1iload_module modules/ngx_http_modsecurity_module.so;' /etc/nginx/nginx.conf \
     && mkdir /etc/nginx/modsec \
     && wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended \
     && mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf \
@@ -36,7 +33,9 @@ RUN sed -i '1iload_module modules/ngx_http_modsecurity_module.so;' /etc/nginx/ng
     && mv /etc/nginx/modsec/owasp-modsecurity-crs/crs-setup.conf.example /etc/nginx/modsec/owasp-modsecurity-crs/crs-setup.conf \
     && cd /etc/nginx/modsec/owasp-modsecurity-crs/rules \
     && mv REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf \
-    && mv RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
+    && mv RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get purge -y --auto-remove $buildDeps
 
 ADD main.conf /etc/nginx/modsec/
 ADD modsecurity.conf /etc/nginx/conf.d/
