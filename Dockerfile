@@ -35,9 +35,9 @@ RUN apt-get update \
     && cd /etc/nginx/modsec/owasp-modsecurity-crs/rules \
     && mv REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf \
     && mv RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf \
-    && apt-get purge -y --auto-remove $buildDeps
+    && apt-get purge -y --auto-remove $buildDeps \
     && apt-get install -y libcurl3 liblmdb0 libyajl2 --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/apt/lists/*
 
 ADD main.conf /etc/nginx/modsec/
 ADD modsecurity.conf /etc/nginx/conf.d/
