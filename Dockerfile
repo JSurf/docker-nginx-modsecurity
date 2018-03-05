@@ -23,6 +23,7 @@ RUN apt-get update \
     && cd .. \
     && rm -rf ModSecurity \
     && rm -rf nginx-$NGINX_SRC \
+    && rm -rf nginx-$NGINX_SRC.tar.gz \
     && rm -rf ModSecurity-nginx \
     && sed -i '1iload_module modules/ngx_http_modsecurity_module.so;' /etc/nginx/nginx.conf \
     && mkdir /etc/nginx/modsec \
@@ -34,8 +35,9 @@ RUN apt-get update \
     && cd /etc/nginx/modsec/owasp-modsecurity-crs/rules \
     && mv REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf \
     && mv RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf \
-    && rm -rf /var/lib/apt/lists/* \
     && apt-get purge -y --auto-remove $buildDeps
+    && apt-get install -y libcurl3 liblmdb0 libyajl2 --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
 
 ADD main.conf /etc/nginx/modsec/
 ADD modsecurity.conf /etc/nginx/conf.d/
