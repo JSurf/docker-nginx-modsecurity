@@ -33,6 +33,7 @@ RUN apt-get update \
     && git clone --depth 1 https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/nginx/modsec/owasp-modsecurity-crs \    
     && mv /etc/nginx/modsec/owasp-modsecurity-crs/crs-setup.conf.example /etc/nginx/modsec/owasp-modsecurity-crs/crs-setup.conf \
     && cd /etc/nginx/modsec/owasp-modsecurity-crs/rules \
+    && sed -i 's/MULTIPART_SEMICOLON_MISSING/MULTIPART_MISSING_SEMICOLON/' REQUEST-920-PROTOCOL-ENFORCEMENT.conf
     && mv REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf \
     && mv RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf \
     && apt-get purge -y --auto-remove $buildDeps \
