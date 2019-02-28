@@ -27,7 +27,7 @@ RUN apt-get update \
     && rm -rf ModSecurity-nginx \
     && sed -i '1iload_module modules/ngx_http_modsecurity_module.so;' /etc/nginx/nginx.conf \
     && mkdir /etc/nginx/modsec \
-    && wget -P /etc/nginx/modsec/https://github.com/SpiderLabs/ModSecurity/raw/v3/master/unicode.mapping \
+    && wget -P /etc/nginx/modsec/ https://github.com/SpiderLabs/ModSecurity/raw/v3/master/unicode.mapping \
     && wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended \
     && mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf \
     && sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf \
